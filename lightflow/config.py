@@ -164,7 +164,12 @@ class Config:
 
     def set_to_default(self):
         """ Overwrite the configuration with the default configuration. """
-        self._config = yaml.safe_load(self.default())
+        # yaml = YAML(type='safe', pure=True)
+        y = yaml.YAML(typ='safe', pure=True)
+        # yaml.default_flow_style = False
+        # yaml.indent(mapping=2, sequence=4, offset=2)
+        # yaml.preserve_quotes = True
+        self._config = y.load(self.default())
 
     def _update_from_file(self, filename):
         """ Helper method to update an existing configuration with the values from a file.
@@ -178,7 +183,8 @@ class Config:
         if os.path.exists(filename):
             try:
                 with open(filename, 'r') as config_file:
-                    yaml_dict = yaml.safe_load(config_file.read())
+                    y = yaml.YAML(typ='safe', pure=True)
+                    yaml_dict = y.load(config_file.read())
                     if yaml_dict is not None:
                         self._update_dict(self._config, yaml_dict)
             except IsADirectoryError:
